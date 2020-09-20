@@ -1,2 +1,1 @@
-# For-receive-local-test-repository
-receive local test repository
+各种杂货
