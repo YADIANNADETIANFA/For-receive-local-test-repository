@@ -1,0 +1,54 @@
+一种将POJO置入IOC容器的方法：
+
+先定义一个POJO
+public class User{
+	private Long id;
+	private String userName;
+	private String note;
+}
+
+再定义一个AppConfig.java配置文件
+@Configuration
+public class AppConfig{
+	@Bean(name = "user")
+	public User initUser(){
+		User user = new User();
+		user.setId(1L);
+		user.setUserName("user_name_1");
+		user.setNote("note_1");
+		return user;
+	}
+}
+(@Configuration代表Java配置文件，Spring的容器会根据它来生成IOC容器去装配到Bean；
+@Bean代表将initUser方法返回的POJO装配到IOC容器中)
+
+使用AnnotationConfigApplicationContext来构建自己的IOC容器
+ApplicationContext ctx = new AnnotationConfigApplicationContext(AppConfig.class);
+User user = ctx.getBean(User.class);
+
+
+
+另一种更方便的方法：
+@Component("user")
+public class User{
+	@Vaule("1")
+	private Long id;
+	@Value("user_name_1")
+	private String userName;
+	@Vaule("note_1")
+	private String note;
+}
+
+然后扫描
+@Configuration
+@ComponentScan
+public class AppConfig{
+}
+
+
+使用AnnotationConfigApplicationContext来构建自己的IOC容器
+ApplicationContext ctx = new AnnotationConfigApplicationContext(AppConfig.class);
+User user = ctx.getBean(User.class);
+
+均在SpringBoot 26左右
+置于@Component与@Configuration两个注解的具体区别，在平板“我的查找”中有简略说明
