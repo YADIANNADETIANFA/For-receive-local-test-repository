@@ -1,0 +1,32 @@
+	Java允许在内存中创建可复用的Java对象，但这些对象生命周期比JVM生命周期短，但现实应用中，可能要求在JVM停止运行之后
+能够保存（持久化）指定对象，并在将来重新读取被保存的对象。
+	Java对象序列化实现该功能，使用Java对象序列化，在保存对象时，会把其状态保存为一组字节，在未来再将这些字节组装成对象
+	必须注意的是，对象序列化保存的是对象的“状态”，即它的成员变量，因此，对象序列化不会关注类中的静态变量
+	在Java中，只要一个类实现了java.io.Serializable接口，他就可以被序列化（枚举类也可以被序列化）
+	在其他地方读取二进制序列化文件以还原对象时，必须保证该“其他”地方包含有原.class类文件，否则会抛出ClassNotFoundException异常
+	简单说，Java对象序列化就是把对象写入到输出流中，用来存储或传输；反序列化就是从输入流中读取对象
+	对象序列化是基于字节的，不能使用基于字符的流
+	String类型的对象、枚举类型的对象、数组对象，都是默认可以被序列化的
+	使用默认机制在序列化对象时，不仅会序列化当前对象，还会对该对象引用的其它对象也进行序列化，
+同样地，这些其它对象引用的另外对象也将被序列化，以此类推。
+
+--	https://www.cnblogs.com/kubixuesheng/p/10350523.html
+
+
+
+	Java序列化机制通过判断类的serialVersionUID来验证版本一致性。在进行反序列化时，JVM会把传来的字节流中的serialVersionUID于本地相应实体类
+的serialVersionUID进行比较，如果相同说明一致，可以反序列化，否则异常，InvalidCastException
+
+	serialVersionUID有两种显示的生成方式
+	一是默认的1L，比如private static final long serialVersionUID = 1L;
+	二是根据包名，类名，继承关系，非私有方法和属性，参数，返回值等诸多因子计算得出，极度复杂生成一个64位哈希字段，基本上计算出来这个值就是
+唯一的。比如private static final long serialVersionUID = xxxxL;
+	注意：显示声明serialVersionUID可以避免对象不一致
+	
+	当一个类实现了Serializable接口，如果没有显示定义serialVersionUID，IDE或者Eclipse会自动给出相应提醒
+	
+	如果我们不希望通过编译器自动强制划分软件版本，即实现序列化接口的实体能够兼容先前版本，就需要显示定义一个serialVersionUID，类型为Long
+的变量，不修改这个变量值的序列化实体，都可以相互进行序列化和反序列化
+
+-- https://blog.csdn.net/u014750606/article/details/80040130?utm_medium=distribute.wap_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-1.wap_blog_relevant_no_pic2&depth_1-utm_source=distribute.wap_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-1.wap_blog_relevant_no_pic2
+
